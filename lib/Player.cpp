@@ -234,6 +234,12 @@ Player::getEOS ()
   return _eos;
 }
 
+bool
+Player::getPrepared ()
+{
+  return false;
+}
+
 void
 Player::setEOS (bool eos)
 {

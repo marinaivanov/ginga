@@ -92,6 +92,7 @@ public:
   Time getDuration ();
   void setDuration (Time);
 
+  bool getPrepared ();
   bool getEOS ();
   void setEOS (bool);
 
