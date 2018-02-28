@@ -40,12 +40,15 @@ public:
 
   // Media:
   virtual bool isFocused ();
+  virtual Event * getCurrentPrefetchEvent ();
   virtual bool getZ (int *, int *);
   virtual void redraw (cairo_t *);
 
 protected:
   Player *_player; // underlying player
+  Event * _currentPrefetchEvent;
 
+  void createPlayer ();
   void doStop () override;
 };
 

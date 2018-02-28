@@ -31,6 +31,7 @@ GINGA_NAMESPACE_BEGIN
 Media::Media (const string &id) : Object (id)
 {
   _player = nullptr;
+  _currentPrefetchEvent = nullptr;
 }
 
 Media::~Media ()
@@ -143,6 +144,19 @@ Media::sendTick (Time total, Time diff, Time frame)
 {
   Time dur;
 
+  if (this->isPreparing ())
+    {
+      g_assert_nonnull (_player);
+      if (_player->getPrepared () )
+      {
+        TRACE ("_player->getPrepared true");
+        Event *currentPrefetch = this->getCurrentPrefetchEvent ();
+        g_assert_nonnull (currentPrefetch);
+        _doc->evalAction (currentPrefetch, Event::STOP);
+        return;
+      }
+    }
+
   // Update object time.
   Object::sendTick (total, diff, frame);
 
@@ -182,19 +196,10 @@ Media::beforeTransition (Event *evt, Event::Transition transition)
               {
                 if (evt->isLambda ())
                   { // Lambda
-                    Formatter *fmt;
-
-                    g_assert (_doc->getData ("formatter", (void **) &fmt));
-                    g_assert_null (_player);
-                    _player = Player::createPlayer (
-                        fmt, this, _properties["uri"], _properties["type"]);
+                    createPlayer ();
                     if (unlikely (_player == nullptr))
                       return false; // fail
 
-                    for (auto it : _properties)
-                      _player->setProperty (it.first, it.second);
-
-                    g_assert_nonnull (_player);
                     // Start underlying player.
                     // TODO: Check player failure.
                     _player->start (); // Just lambda events reaches this!
@@ -301,6 +306,9 @@ Media::beforeTransition (Event *evt, Event::Transition transition)
 
     case Event::SELECTION:
       break; // nothing to do
+
+    case Event::PREFETCH:
+      break;
 
     default:
       g_assert_not_reached ();
@@ -445,11 +453,53 @@ Media::afterTransition (Event *evt, Event::Transition transition)
         break;
       }
 
+    case Event::PREFETCH:
+      {
+        switch (transition)
+          {
+          case Event::START:
+            TRACE ("start %s", evt->getFullId ().c_str ());
+            createPlayer ();
+            // _player->startPrefetch()
+            _isPreparing = true;
+            _currentPrefetchEvent = evt;
+            break;
+          case Event::STOP:
+            TRACE ("stop %s", evt->getFullId ().c_str ());
+            _isPreparing = false;
+            break;
+          default:
+            g_assert_not_reached ();
+          }
+        break;
+      }
+
     default:
       g_assert_not_reached ();
     }
 
   return true;
+}
+
+Event *
+Media::getCurrentPrefetchEvent ()
+{
+  return _currentPrefetchEvent;
+}
+
+void
+Media::createPlayer ()
+{
+  if (_player)
+    return;
+  Formatter *fmt;
+  g_assert (_doc->getData ("formatter", (void **) &fmt));
+  g_assert_null (_player);
+  _player = Player::createPlayer (fmt, this, _properties["uri"],
+                                  _properties["type"]);
+  g_assert_nonnull (_player);
+  for (auto it : _properties)
+    _player->setProperty (it.first, it.second);
 }
 
 // Public.
