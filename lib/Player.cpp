@@ -164,6 +164,8 @@ Player::Player (Formatter *formatter, Media *media)
   _media = media;
   _id = media->getId ();
 
+  simulatedPrepareCounter = 100;
+
   _state = SLEEPING;
   _time = 0;
   _eos = false;
@@ -237,7 +239,11 @@ Player::getEOS ()
 bool
 Player::getPrepared ()
 {
-  return false;
+  simulatedPrepareCounter--;
+  if (simulatedPrepareCounter == 0)
+    return true;
+  else
+    return false;
 }
 
 void

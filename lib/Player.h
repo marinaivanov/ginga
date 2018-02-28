@@ -138,6 +138,7 @@ protected:
   bool _dirty;               // true if surface should be reloaded
   PlayerAnimator *_animator; // associated animator
   list<int> _crop;           // polygon for cropping effect
+  int simulatedPrepareCounter;
 
   map<string, string> _properties; // property table
   struct
