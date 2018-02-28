@@ -862,11 +862,11 @@ static map<string, pair<Event::Type, Event::Transition> >
       {"pause", {Event::PRESENTATION, Event::PAUSE} },
       {"resume", {Event::PRESENTATION, Event::RESUME} },
       {"set", {Event::ATTRIBUTION, Event::START} },
-      {"startPrefetch", {Event::PREFETCH, Event::START} }, 
+      {"startPrefetch", {Event::PREFETCH, Event::START} },
       {"stopPrefetch", {Event::PREFETCH, Event::STOP} },
       {"abortPrefetch", {Event::PREFETCH, Event::ABORT} },
       {"pausePrefetch", {Event::PREFETCH, Event::PAUSE} },
-      {"resumePrefetch", {Event::PREFETCH, Event::RESUME} },      
+      {"resumePrefetch", {Event::PREFETCH, Event::RESUME} },
     };
 
 /// Index reserved role table.
@@ -1702,7 +1702,7 @@ ParserState::resolveInterface (Context *ctx, ParserElt *elt, Event **evt)
           result = obj->getAttributionEvent (iface);
           if (unlikely (result == nullptr))
                 goto fail;
-          
+
         }
     }
   else if (instanceof (Context *, obj))
@@ -2724,12 +2724,6 @@ borderColor='%s'}",
                   }
                   case Event::PREFETCH:
                   {
-                    if (unlikely (evtType == Event::ATTRIBUTION))
-                      {
-                        return st->errEltBadAttribute (
-                            bind->node, "interface", evt->getId (),
-                            "must be a anchor");
-                      }
                     string eventID = evt->getId();
                     obj->addPrefetchEvent(eventID);
                     act.event = obj->getPrefetchEvent(eventID);
