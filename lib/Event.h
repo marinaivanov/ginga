@@ -57,6 +57,13 @@ public:
      * directed to the object.
      */
     SELECTION,
+    
+    /**
+     * @brief Prefetch event.
+     *
+     * Stands for the prefetch of a specific time interval of the object.
+     */
+    PREFETCH,
   };
 
   /// @brief Event state.

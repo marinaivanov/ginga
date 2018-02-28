@@ -272,6 +272,23 @@ Object::addSelectionEvent (const string &key)
 }
 
 Event *
+Object::getPrefetchEvent (const string &id)
+{
+  return this->getEvent (Event::PREFETCH, id);
+}
+
+void
+Object::addPrefetchEvent (const string &id)
+{
+  Event *evt;
+  if (this->getPrefetchEvent (id))
+    return;
+
+  evt = new Event (Event::PREFETCH, this, id);
+  _events.insert (evt);
+}
+
+Event *
 Object::getLambda ()
 {
   g_assert_nonnull (_lambda);

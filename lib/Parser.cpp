@@ -851,12 +851,22 @@ static map<string, pair<Event::Type, Event::Transition> >
       {"onSelection", {Event::SELECTION, Event::START} },
       {"onBeginSelection", {Event::SELECTION, Event::START} },
       {"onEndSelection", {Event::SELECTION, Event::STOP} },
+      {"onBeginPrefetch", {Event::PREFETCH, Event::START} }, // conditions
+      {"onEndPrefetch", {Event::PREFETCH, Event::STOP} },
+      {"onAbortPrefetch", {Event::PREFETCH, Event::ABORT} },
+      {"onPausePrefetch", {Event::PREFETCH, Event::PAUSE} },
+      {"onResumePrefetch", {Event::PREFETCH, Event::RESUME} },
       {"start", {Event::PRESENTATION, Event::START} }, // actions
       {"stop", {Event::PRESENTATION, Event::STOP} },
       {"abort", {Event::PRESENTATION, Event::ABORT} },
       {"pause", {Event::PRESENTATION, Event::PAUSE} },
       {"resume", {Event::PRESENTATION, Event::RESUME} },
       {"set", {Event::ATTRIBUTION, Event::START} },
+      {"startPrefetch", {Event::PREFETCH, Event::START} }, 
+      {"stopPrefetch", {Event::PREFETCH, Event::STOP} },
+      {"abortPrefetch", {Event::PREFETCH, Event::ABORT} },
+      {"pausePrefetch", {Event::PREFETCH, Event::PAUSE} },
+      {"resumePrefetch", {Event::PREFETCH, Event::RESUME} },      
     };
 
 /// Index reserved role table.
@@ -879,6 +889,7 @@ static map<string, Event::Type> parser_syntax_event_type_table = {
   {"presentation", Event::PRESENTATION},
   {"attribution", Event::ATTRIBUTION},
   {"selection", Event::SELECTION},
+  {"prefetch", Event::PREFETCH},
 };
 
 /// Known transitions.
@@ -1690,7 +1701,8 @@ ParserState::resolveInterface (Context *ctx, ParserElt *elt, Event **evt)
         {
           result = obj->getAttributionEvent (iface);
           if (unlikely (result == nullptr))
-            goto fail;
+                goto fail;
+          
         }
     }
   else if (instanceof (Context *, obj))
@@ -2708,6 +2720,20 @@ borderColor='%s'}",
                     act.event = obj->getSelectionEvent (act.value);
                     g_assert_nonnull (act.event);
                     act.event->setParameter ("key", act.value);
+                    break;
+                  }
+                  case Event::PREFETCH:
+                  {
+                    if (unlikely (evtType == Event::ATTRIBUTION))
+                      {
+                        return st->errEltBadAttribute (
+                            bind->node, "interface", evt->getId (),
+                            "must be a anchor");
+                      }
+                    string eventID = evt->getId();
+                    obj->addPrefetchEvent(eventID);
+                    act.event = obj->getPrefetchEvent(eventID);
+                    g_assert_nonnull (act.event);
                     break;
                   }
                 default:

@@ -57,7 +57,10 @@ public:
   void addPresentationEvent (const string &, const string &);
   Event *getSelectionEvent (const string &);
   void addSelectionEvent (const string &);
-
+  Event *getPrefetchEvent (const string &);
+  Event *getPrefetchEventByLabel (const string &);
+  void addPrefetchEvent (const string &);
+    
   Event *getLambda ();
   bool isOccurring ();
   bool isPaused ();
