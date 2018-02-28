@@ -35,6 +35,7 @@ Object::Object (const string &id) : _id (id)
   _doc = nullptr;
   _parent = nullptr;
   _time = GINGA_TIME_NONE;
+  _isPreparing = false;
 
   this->addPresentationEvent ("@lambda", 0, GINGA_TIME_NONE);
   _lambda = this->getPresentationEvent ("@lambda");
@@ -133,9 +134,9 @@ Object::toString ()
       }
 
   list<pair<string, list<string> *> > evts = {
-    {"evts pres.", &pres},
-    {"evts attr.", &attr},
-    {"evts sel.", &sel},
+    { "evts pres.", &pres },
+    { "evts attr.", &attr },
+    { "evts sel.", &sel },
   };
 
   for (auto it_evts : evts)
@@ -300,6 +301,12 @@ Object::isOccurring ()
 {
   g_assert_nonnull (_lambda);
   return _lambda->getState () == Event::OCCURRING;
+}
+
+bool
+Object::isPreparing ()
+{
+  return _isPreparing;
 }
 
 bool

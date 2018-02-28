@@ -60,7 +60,7 @@ public:
   Event *getPrefetchEvent (const string &);
   Event *getPrefetchEventByLabel (const string &);
   void addPrefetchEvent (const string &);
-    
+
   Event *getLambda ();
   bool isOccurring ();
   bool isPaused ();
@@ -108,7 +108,10 @@ public:
    */
   virtual bool afterTransition (Event *, Event::Transition) = 0;
 
+  virtual bool isPreparing ();
+
 protected:
+  bool _isPreparing;
   string _id;                         // id
   Document *_doc;                     // parent document
   Composition *_parent;               // parent object
