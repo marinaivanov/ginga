@@ -60,7 +60,8 @@ public:
   Event *getPrefetchEvent (const string &);
   Event *getPrefetchEventByLabel (const string &);
   void addPrefetchEvent (const string &);
-
+  void addPrefetchEvent (const string &, Time, Time);
+  
   Event *getLambda ();
   bool isOccurring ();
   bool isPaused ();

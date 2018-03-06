@@ -2725,7 +2725,10 @@ borderColor='%s'}",
                   case Event::PREFETCH:
                   {
                     string eventID = evt->getId();
-                    obj->addPrefetchEvent(eventID);
+                    if(evt->getId () == "@lambda")
+                    {
+                      obj->addPrefetchEvent(eventID);
+                    }
                     act.event = obj->getPrefetchEvent(eventID);
                     g_assert_nonnull (act.event);
                     break;
@@ -3869,6 +3872,7 @@ ParserState::pushArea (ParserState *st, ParserElt *elt)
         }
 
       media->addPresentationEvent (id, begin, end);
+      media->addPrefetchEvent (id, begin, end);
     }
 
   return true;

@@ -289,6 +289,19 @@ Object::addPrefetchEvent (const string &id)
   _events.insert (evt);
 }
 
+void
+Object::addPrefetchEvent (const string &id, Time begin, Time end)
+{
+  Event *evt;
+
+  if (this->getPrefetchEvent (id))
+    return;
+
+  evt = new Event (Event::PREFETCH, this, id);
+  evt->setInterval (begin, end);
+  _events.insert (evt);
+}
+
 Event *
 Object::getLambda ()
 {
