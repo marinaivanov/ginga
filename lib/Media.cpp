@@ -31,7 +31,7 @@ GINGA_NAMESPACE_BEGIN
 Media::Media (const string &id) : Object (id)
 {
   _player = nullptr;
-  _currentPrefetchEvent = nullptr;
+  _currentPreparationEvent = nullptr;
 }
 
 Media::~Media ()
@@ -150,9 +150,9 @@ Media::sendTick (Time total, Time diff, Time frame)
       if (_player->getPrepared () )
       {
         TRACE ("_player->getPrepared true");
-        Event *currentPrefetch = this->getCurrentPrefetchEvent ();
-        g_assert_nonnull (currentPrefetch);
-        _doc->evalAction (currentPrefetch, Event::STOP);
+        Event *currentPreparation = this->getCurrentPreparationEvent ();
+        g_assert_nonnull (currentPreparation);
+        _doc->evalAction (currentPreparation, Event::STOP);
         return;
       }
     }
@@ -307,7 +307,7 @@ Media::beforeTransition (Event *evt, Event::Transition transition)
     case Event::SELECTION:
       break; // nothing to do
 
-    case Event::PREFETCH:
+    case Event::PREPARATION:
       break;
 
     default:
@@ -453,16 +453,16 @@ Media::afterTransition (Event *evt, Event::Transition transition)
         break;
       }
 
-    case Event::PREFETCH:
+    case Event::PREPARATION:
       {
         switch (transition)
           {
           case Event::START:
             TRACE ("start %s", evt->getFullId ().c_str ());
             createPlayer ();
-            // _player->startPrefetch()
+            // _player->startPreparation()
             _isPreparing = true;
-            _currentPrefetchEvent = evt;
+            _currentPreparationEvent = evt;
             break;
           case Event::STOP:
             TRACE ("stop %s", evt->getFullId ().c_str ());
@@ -482,9 +482,9 @@ Media::afterTransition (Event *evt, Event::Transition transition)
 }
 
 Event *
-Media::getCurrentPrefetchEvent ()
+Media::getCurrentPreparationEvent ()
 {
-  return _currentPrefetchEvent;
+  return _currentPreparationEvent;
 }
 
 void

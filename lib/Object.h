@@ -57,10 +57,10 @@ public:
   void addPresentationEvent (const string &, const string &);
   Event *getSelectionEvent (const string &);
   void addSelectionEvent (const string &);
-  Event *getPrefetchEvent (const string &);
-  Event *getPrefetchEventByLabel (const string &);
-  void addPrefetchEvent (const string &);
-  void addPrefetchEvent (const string &, Time, Time);
+  Event *getPreparationEvent (const string &);
+  Event *getPreparationEventByLabel (const string &);
+  void addPreparationEvent (const string &);
+  void addPreparationEvent (const string &, Time, Time);
   
   Event *getLambda ();
   bool isOccurring ();

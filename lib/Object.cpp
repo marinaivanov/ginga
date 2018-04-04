@@ -273,31 +273,31 @@ Object::addSelectionEvent (const string &key)
 }
 
 Event *
-Object::getPrefetchEvent (const string &id)
+Object::getPreparationEvent (const string &id)
 {
-  return this->getEvent (Event::PREFETCH, id);
+  return this->getEvent (Event::PREPARATION, id);
 }
 
 void
-Object::addPrefetchEvent (const string &id)
+Object::addPreparationEvent (const string &id)
 {
   Event *evt;
-  if (this->getPrefetchEvent (id))
+  if (this->getPreparationEvent (id))
     return;
 
-  evt = new Event (Event::PREFETCH, this, id);
+  evt = new Event (Event::PREPARATION, this, id);
   _events.insert (evt);
 }
 
 void
-Object::addPrefetchEvent (const string &id, Time begin, Time end)
+Object::addPreparationEvent (const string &id, Time begin, Time end)
 {
   Event *evt;
 
-  if (this->getPrefetchEvent (id))
+  if (this->getPreparationEvent (id))
     return;
 
-  evt = new Event (Event::PREFETCH, this, id);
+  evt = new Event (Event::PREPARATION, this, id);
   evt->setInterval (begin, end);
   _events.insert (evt);
 }

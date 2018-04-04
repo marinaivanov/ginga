@@ -73,7 +73,7 @@ Event::getFullId ()
       return obj_id + "." + _id;
     case Event::SELECTION:
       return obj_id + "<" + _id + ">";
-    case Event::PREFETCH:
+    case Event::PREPARATION:
       return obj_id + "$" + _id;
     default:
       g_assert_not_reached ();
@@ -249,8 +249,8 @@ Event::getEventTypeAsString (Event::Type type)
       return "attribution";
     case Event::SELECTION:
       return "selection";
-    case Event::PREFETCH:
-      return "prefetch";
+    case Event::PREPARATION:
+      return "preparation";
     default:
       g_assert_not_reached ();
     }

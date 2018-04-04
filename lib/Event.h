@@ -59,11 +59,11 @@ public:
     SELECTION,
     
     /**
-     * @brief Prefetch event.
+     * @brief Preparation event.
      *
-     * Stands for the prefetch of a specific time interval of the object.
+     * Stands for the preparation of a specific time interval of the object.
      */
-    PREFETCH,
+    PREPARATION,
   };
 
   /// @brief Event state.

@@ -851,22 +851,22 @@ static map<string, pair<Event::Type, Event::Transition> >
       {"onSelection", {Event::SELECTION, Event::START} },
       {"onBeginSelection", {Event::SELECTION, Event::START} },
       {"onEndSelection", {Event::SELECTION, Event::STOP} },
-      {"onBeginPrefetch", {Event::PREFETCH, Event::START} }, // conditions
-      {"onEndPrefetch", {Event::PREFETCH, Event::STOP} },
-      {"onAbortPrefetch", {Event::PREFETCH, Event::ABORT} },
-      {"onPausePrefetch", {Event::PREFETCH, Event::PAUSE} },
-      {"onResumePrefetch", {Event::PREFETCH, Event::RESUME} },
+      {"onBeginPreparation", {Event::PREPARATION, Event::START} }, // conditions
+      {"onEndPreparation", {Event::PREPARATION, Event::STOP} },
+      {"onAbortPreparation", {Event::PREPARATION, Event::ABORT} },
+      {"onPausePreparation", {Event::PREPARATION, Event::PAUSE} },
+      {"onResumePreparation", {Event::PREPARATION, Event::RESUME} },
       {"start", {Event::PRESENTATION, Event::START} }, // actions
       {"stop", {Event::PRESENTATION, Event::STOP} },
       {"abort", {Event::PRESENTATION, Event::ABORT} },
       {"pause", {Event::PRESENTATION, Event::PAUSE} },
       {"resume", {Event::PRESENTATION, Event::RESUME} },
       {"set", {Event::ATTRIBUTION, Event::START} },
-      {"startPrefetch", {Event::PREFETCH, Event::START} },
-      {"stopPrefetch", {Event::PREFETCH, Event::STOP} },
-      {"abortPrefetch", {Event::PREFETCH, Event::ABORT} },
-      {"pausePrefetch", {Event::PREFETCH, Event::PAUSE} },
-      {"resumePrefetch", {Event::PREFETCH, Event::RESUME} },
+      {"startPreparation", {Event::PREPARATION, Event::START} },
+      {"stopPreparation", {Event::PREPARATION, Event::STOP} },
+      {"abortPreparation", {Event::PREPARATION, Event::ABORT} },
+      {"pausePreparation", {Event::PREPARATION, Event::PAUSE} },
+      {"resumePreparation", {Event::PREPARATION, Event::RESUME} },
     };
 
 /// Index reserved role table.
@@ -889,7 +889,7 @@ static map<string, Event::Type> parser_syntax_event_type_table = {
   {"presentation", Event::PRESENTATION},
   {"attribution", Event::ATTRIBUTION},
   {"selection", Event::SELECTION},
-  {"prefetch", Event::PREFETCH},
+  {"preparation", Event::PREPARATION},
 };
 
 /// Known transitions.
@@ -2722,14 +2722,14 @@ borderColor='%s'}",
                     act.event->setParameter ("key", act.value);
                     break;
                   }
-                  case Event::PREFETCH:
+                  case Event::PREPARATION:
                   {
                     string eventID = evt->getId();
                     if(evt->getId () == "@lambda")
                     {
-                      obj->addPrefetchEvent(eventID);
+                      obj->addPreparationEvent(eventID);
                     }
-                    act.event = obj->getPrefetchEvent(eventID);
+                    act.event = obj->getPreparationEvent(eventID);
                     g_assert_nonnull (act.event);
                     break;
                   }
@@ -3872,7 +3872,7 @@ ParserState::pushArea (ParserState *st, ParserElt *elt)
         }
 
       media->addPresentationEvent (id, begin, end);
-      media->addPrefetchEvent (id, begin, end);
+      media->addPreparationEvent (id, begin, end);
     }
 
   return true;
