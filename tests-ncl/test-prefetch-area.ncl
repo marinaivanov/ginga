@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<ncl id="prefetchExample" xmlns="http://www.ncl.org.br/NCL3.0/EDTVProfile">
+<ncl id="preparationExample" xmlns="http://www.ncl.org.br/NCL3.0/EDTVProfile">
 	<head>
 		<regionBase>
 			<region id="regVideo" width="100%" height="100%" zIndex="2"/>
@@ -14,19 +14,19 @@
 		</descriptorBase>
 
 		<connectorBase>
-			<causalConnector id="onBeginPrefetchStart">
-				<simpleCondition role="onBeginPrefetch"/>
+			<causalConnector id="onBeginPreparationStart">
+				<simpleCondition role="onBeginPreparation"/>
 				<simpleAction role="start"/>
 			</causalConnector>
-			<causalConnector id="onEndPrefetchStartStop">
-				<simpleCondition role="onEndPrefetch"/>
+			<causalConnector id="onEndPreparationStartStop">
+				<simpleCondition role="onEndPreparation"/>
 				<simpleAction role="start"/>
 				<simpleAction role="stop"/>
 			</causalConnector>
-			<causalConnector id="onKeySelStartPrefetchStop">
+			<causalConnector id="onKeySelStartPreparationStop">
 				<connectorParam name="key"/>
 				<simpleCondition role="onSelection" key="$key"/>
-				<simpleAction role="startPrefetch"/>
+				<simpleAction role="startPreparation"/>
 				<simpleAction role="stop"/>      
 			</causalConnector>
 		</connectorBase>
@@ -40,21 +40,21 @@
 		<media id="btnPlay" src="samples/watch-button.png" descriptor="descBtnPlay"/>
 		<media id="loading" src="samples/clock.ogv" descriptor="descLoading"/>
 
-		<link xconnector="onKeySelStartPrefetchStop">
+		<link xconnector="onKeySelStartPreparationStop">
 			<bind role="onSelection" component="btnPlay">
 				<bindParam name="key" value="BLUE"/>
 			</bind>
-			<bind role="startPrefetch" component="video" interface="area1"/>
+			<bind role="startPreparation" component="video" interface="area1"/>
 			<bind role="stop" component="btnPlay"/>
 	
 		</link>
-		<link xconnector="onBeginPrefetchStart">
-			<bind role="onBeginPrefetch" component="video" interface="area1"/>
+		<link xconnector="onBeginPrefeparationStart">
+			<bind role="onBeginPreparation" component="video" interface="area1"/>
 			<bind role="start" component="loading"/>
 		</link>    
 
-		<link xconnector="onEndPrefetchStartStop">
-			<bind role="onEndPrefetch" component="video" interface="area1"/>
+		<link xconnector="onEndPreparationStartStop">
+			<bind role="onEndPrefeparation" component="video" interface="area1"/>
 			<bind role="start" component="video"/>
 			<bind role="stop" component="loading"/>
 		</link>

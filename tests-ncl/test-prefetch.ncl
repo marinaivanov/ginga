@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<ncl id="prefetchExample" xmlns="http://www.ncl.org.br/NCL3.0/EDTVProfile">
+<ncl id="preparationExample" xmlns="http://www.ncl.org.br/NCL3.0/EDTVProfile">
 	<head>
 		<regionBase>
 			<region id="regLoading" width="100%" height="100%" zIndex="1"/>
@@ -12,12 +12,12 @@
 		</descriptorBase>
 
 		<connectorBase>
-			<causalConnector id="onBeginStartPrefetch">
+			<causalConnector id="onBeginStartPreparation">
 				<simpleCondition role="onBegin"/>
-				<simpleAction role="startPrefetch"/>
+				<simpleAction role="startPreparation"/>
 			</causalConnector>
-			<causalConnector id="onEndPrefetchStopStart">
-				<simpleCondition role="onEndPrefetch"/>
+			<causalConnector id="onEndPreparationStopStart">
+				<simpleCondition role="onEndPreparation"/>
 				<simpleAction role="stop"/>
 				<simpleAction role="start"/>
 			</causalConnector>
@@ -29,13 +29,13 @@
 		<media id="loading" src="samples/clock.ogv" descriptor="descLoading"/>
 		<media id="video" src="samples/bunny.ogg" descriptor="descVideo"/>
 
-		<link xconnector="onBeginStartPrefetch">
+		<link xconnector="onBeginStartPreparation">
 			<bind role="onBegin" component="loading"/>
-			<bind role="startPrefetch" component="video"/>
+			<bind role="startPreparation" component="video"/>
 		</link>
 
-		<link xconnector="onEndPrefetchStopStart">
-			<bind role="onEndPrefetch" component="video"/>
+		<link xconnector="onEndPreparationStopStart">
+			<bind role="onEndPreparation" component="video"/>
 			<bind role="stop" component="loading"/>
 			<bind role="start" component="video"/>
 		</link>
