@@ -149,12 +149,12 @@ Media::sendTick (Time total, Time diff, Time frame)
       g_assert_nonnull (_player);
       if (_player->getPrepared () )
       {
-        TRACE ("_player->getPrepared true");
         Event *currentPreparation = this->getCurrentPreparationEvent ();
         g_assert_nonnull (currentPreparation);
         _doc->evalAction (currentPreparation, Event::STOP);
         return;
       }
+      
     }
 
   // Update object time.
@@ -168,17 +168,20 @@ Media::sendTick (Time total, Time diff, Time frame)
   _player->incTime (diff);
 
   // Check EOS.
-  if (_player->getEOS ()
-      || (GINGA_TIME_IS_VALID (dur = _player->getDuration ())
-          && _time > dur))
-    {
-      Event *lambda = this->getLambda ();
-      g_assert_nonnull (lambda);
-      TRACE ("eos %s at %" GINGA_TIME_FORMAT, lambda->getFullId ().c_str (),
-             GINGA_TIME_ARGS (_time));
-      _doc->evalAction (lambda, Event::STOP);
-      return;
-    }
+  //if(_player->getState() != Player::PREPARING)
+  //{
+    if (_player->getEOS ()
+        || (GINGA_TIME_IS_VALID (dur = _player->getDuration ())
+            && _time > dur ))
+      {
+        Event *lambda = this->getLambda ();
+        g_assert_nonnull (lambda);
+        //TRACE ("eos %s at %" GINGA_TIME_FORMAT, lambda->getFullId ().c_str (),
+        //      GINGA_TIME_ARGS (_time));
+        _doc->evalAction (lambda, Event::STOP);
+        return;
+      }
+  //}
 }
 
 bool
@@ -291,6 +294,8 @@ Media::beforeTransition (Event *evt, Event::Transition transition)
           }
 
         case Event::STOP:
+          if(evt->isLambda() && this->getId() != "__settings__")
+            g_print("stop presentation %s\n", this->getId().c_str());
           break; // nothing to do
 
         case Event::ABORT:
@@ -345,6 +350,8 @@ Media::afterTransition (Event *evt, Event::Transition transition)
                     }
                 }
               TRACE ("start %s", evt->getFullId ().c_str ());
+              if(this->getId () != "__settings__")
+                g_print ("start presentation %s\n", this->getId ().c_str ());
             }
           else if (evt->hasLabel ())
             {
@@ -458,14 +465,30 @@ Media::afterTransition (Event *evt, Event::Transition transition)
         switch (transition)
           {
           case Event::START:
-            TRACE ("start %s", evt->getFullId ().c_str ());
             createPlayer ();
-            // _player->startPreparation()
+            if(evt->getId() != "@lambda")
+              {
+                Time begin, end;
+                evt->getInterval(&begin, &end);
+                string offset_start = xstrbuild ("%" G_GUINT64_FORMAT,
+                                                    begin / GINGA_SECOND);
+                string offset_end = xstrbuild ("%" G_GUINT64_FORMAT,
+                                                    end / GINGA_SECOND);
+                g_print ("start preparation anchor %s (begin= %ss, end= %ss)\n", evt->getId().c_str(), offset_start.c_str (),
+                            offset_end.c_str ());
+                _player->setProperty("offsetBuffer",offset_start);
+                _player->setProperty("offsetEndBuffer",offset_end); 
+              }
+            else
+              {
+                g_print ("start preparation media %s\n", evt->getId().c_str ());
+              }
+            _player->startPreparation();
             _isPreparing = true;
             _currentPreparationEvent = evt;
             break;
           case Event::STOP:
-            TRACE ("stop %s", evt->getFullId ().c_str ());
+              g_print ("stop preparation %s\n", evt->getId().c_str ());
             _isPreparing = false;
             break;
           default:

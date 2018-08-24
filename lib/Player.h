@@ -33,6 +33,7 @@ public:
     SLEEPING = 1, // stopped
     OCCURRING,    // playing
     PAUSED,       // paused
+    PREPARING,    // preparing
   };
 
   enum Property // known properties
@@ -77,6 +78,8 @@ public:
     PROP_WIDTH,
     PROP_Z_INDEX,
     PROP_Z_ORDER,
+    PROP_BUFFER_OFFSET,
+    PROP_BUFFER_OFFSET_END,
   };
 
   Player (Formatter *, Media *);
@@ -94,12 +97,14 @@ public:
 
   bool getPrepared ();
   bool getEOS ();
+  void setPrepared (bool);
   void setEOS (bool);
 
   virtual void start ();
   virtual void stop ();
   virtual void pause ();
   virtual void resume ();
+  virtual void startPreparation ();
 
   virtual string getProperty (const string &);
   virtual void setProperty (const string &, const string &);
@@ -132,13 +137,14 @@ protected:
   State _state;              // current state
   Time _time;                // playback time
   bool _eos;                 // true if content was exhausted
+  bool _prepared;            // true if content is prepared in buffer
   cairo_surface_t *_surface; // player surface
   bool _opengl;              // true if OpenGL is used
   guint _gltexture;          // OpenGL texture (if OpenGL is used)
   bool _dirty;               // true if surface should be reloaded
   PlayerAnimator *_animator; // associated animator
   list<int> _crop;           // polygon for cropping effect
-  int simulatedPrepareCounter;
+  //int simulatedPrepareCounter;
 
   map<string, string> _properties; // property table
   struct

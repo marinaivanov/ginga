@@ -142,6 +142,8 @@ static map<string, PlayerPropertyInfo> player_property_map = {
   {"zOrder", {Player::PROP_Z_ORDER, true, "0"} },
   {"uri", {Player::PROP_URI, true, ""} },
   {"type", {Player::PROP_TYPE, true, "application/x-ginga-timer"} },
+  {"offsetBuffer", {Player::PROP_BUFFER_OFFSET, true, "0"} },
+  {"endOffsetBuffer", {Player::PROP_BUFFER_OFFSET_END, true, "indefinite"} },
 };
 
 static map<string, string> player_property_aliases = {
@@ -165,11 +167,10 @@ Player::Player (Formatter *formatter, Media *media)
   _media = media;
   _id = media->getId ();
 
-  simulatedPrepareCounter = 100;
-
   _state = SLEEPING;
   _time = 0;
   _eos = false;
+  _prepared = false;
   _dirty = true;
   _animator = new PlayerAnimator (_formatter, &_time);
   _surface = nullptr;
@@ -240,17 +241,26 @@ Player::getEOS ()
 bool
 Player::getPrepared ()
 {
-  simulatedPrepareCounter--;
-  if (simulatedPrepareCounter == 0)
-    return true;
-  else
-    return false;
+  //simulatedPrepareCounter--;
+  //if (simulatedPrepareCounter == 0)
+  //  return true;
+  //else
+  //  return false;
+  return _prepared;
 }
 
 void
 Player::setEOS (bool eos)
 {
   _eos = eos;
+}
+
+void
+Player::setPrepared (bool prepared)
+{
+  _prepared = prepared;
+  if(_prepared)
+    TRACE("PREPARADOOOOOO");
 }
 
 void
@@ -285,6 +295,13 @@ Player::resume ()
 {
   g_assert (_state == PAUSED);
   _state = OCCURRING;
+}
+
+void
+Player::startPreparation ()
+{
+  g_assert (_state != PREPARING);
+  _state = PREPARING;
 }
 
 string
@@ -767,6 +784,14 @@ Player::doSetProperty (Property code, unused (const string &name),
     case PROP_TYPE:
       {
         _prop.type = value;
+        break;
+      }
+    case PROP_BUFFER_OFFSET:
+      {
+        break;
+      }
+    case PROP_BUFFER_OFFSET_END:
+      {
         break;
       }
     default:
